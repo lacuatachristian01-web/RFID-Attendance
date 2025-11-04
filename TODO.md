@@ -10,27 +10,27 @@
 - [x] Test basic connectivity and note public IP
 
 ### 2. FastAPI Backend Development
-- [ ] Create Python virtual environment on EC2
-- [ ] Install required packages: fastapi, uvicorn, sqlalchemy, sqlite3
-- [ ] Create main FastAPI application file
-- [ ] Implement database connection using schema.sql
-- [ ] Implement API endpoints:
-  - [ ] POST /scan - Check UID and log attendance
-  - [ ] POST /register - Register new student
-  - [ ] GET /students - Retrieve student list
-  - [ ] POST /events - Create/manage events
-  - [ ] GET /attendance - View attendance logs
-- [ ] Test API endpoints locally before deployment
-- [ ] Deploy to EC2 and start server with uvicorn
+- [x] Create Python virtual environment on EC2
+- [x] Install required packages: fastapi, uvicorn, sqlalchemy, sqlite3
+- [x] Create main FastAPI application file
+- [x] Implement database connection using schema.sql
+- [x] Implement API endpoints:
+  - [x] POST /scan - Check UID and log attendance
+  - [x] POST /register - Register new student
+  - [x] GET /students - Retrieve student list
+  - [x] POST /events - Create/manage events
+  - [x] GET /attendance - View attendance logs
+- [x] Test API endpoints locally before deployment
+- [x] Deploy to EC2 and start server with uvicorn
 
 ### 3. ESP32 Firmware Update
-- [ ] Modify Arduino/cicuit_code/cicuit_code.ino
-- [ ] Remove hardcoded authorizedUIDs array
-- [ ] Add WiFi connectivity code (SSID/password configuration)
-- [ ] Implement HTTP POST request to EC2 API endpoint
-- [ ] Update response handling for authorized/unauthorized feedback
-- [ ] Add LED/buzzer feedback based on API response
-- [ ] Test with mock API endpoint first
+- [x] Modify Arduino/cicuit_code/cicuit_code.ino
+- [x] Remove hardcoded authorizedUIDs array
+- [x] Add WiFi connectivity code (SSID/password configuration)
+- [x] Implement HTTP POST request to EC2 API endpoint
+- [x] Update response handling for authorized/unauthorized feedback
+- [x] Add LED/buzzer feedback based on API response
+- [x] Test with mock API endpoint first
 
 ### 4. UI App Updates
 - [ ] Update API base URL to point to EC2 instance
