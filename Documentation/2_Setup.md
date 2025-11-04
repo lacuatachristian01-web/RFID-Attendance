@@ -34,19 +34,23 @@ This guide walks through setting up the RFID Attendance System components.
 
 1. Launch AWS EC2 instance (Ubuntu, t3.micro for free tier).
 2. Connect to EC2 via SSH.
-3. Upload the project files to your EC2 instance.
-4. Make the deployment script executable: `chmod +x deploy.sh`
-5. Run the automated deployment script: `./deploy.sh`
+3. Clone the repository: `git clone https://github.com/Danncode10/RFID-Attendance.git`
+4. Navigate to the project: `cd RFID-Attendance`
+5. Make the deployment script executable: `chmod +x deploy.sh`
+6. Run the automated deployment script: `./deploy.sh`
 
 The deployment script will automatically:
 - Update system packages
 - Install Python 3, pip, virtual environment, git, and supervisor
-- Create project directory and set up virtual environment
+- Set up Python virtual environment in the project directory
 - Install Python dependencies from `requirements.txt`
 - Initialize the SQLite database using `init_db.py`
+- Create logs directory for Supervisor
 - Configure supervisor for automatic service management
 - Start the FastAPI server on port 8000
 - Test the API endpoints
+
+**Note:** The script works from the git repository root directory and doesn't create additional subdirectories.
 
 ### Manual Setup (Alternative)
 

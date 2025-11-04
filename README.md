@@ -83,6 +83,8 @@ Mobile App ─────────────┘
 
 ```bash
 # On your EC2 instance:
+git clone https://github.com/Danncode10/RFID-Attendance.git
+cd RFID-Attendance
 chmod +x deploy.sh
 ./deploy.sh
 ```
@@ -90,9 +92,10 @@ chmod +x deploy.sh
 The script automatically:
 - Updates system packages
 - Installs Python, pip, virtual environment, supervisor
-- Sets up Python virtual environment
+- Sets up Python virtual environment in project directory
 - Installs dependencies from requirements.txt
 - Initializes SQLite database
+- Creates logs directory
 - Configures supervisor for auto-start
 - Starts FastAPI server on port 8000
 
