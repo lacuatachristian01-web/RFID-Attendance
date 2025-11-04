@@ -30,14 +30,66 @@ This guide walks through setting up the RFID Attendance System components.
 
 ## Backend Setup
 
+### Automated Deployment (Recommended)
+
 1. Launch AWS EC2 instance (Ubuntu, t3.micro for free tier).
 2. Connect to EC2 via SSH.
-3. Install Python and pip: `sudo apt update && sudo apt install python3 python3-pip`
-4. Set up virtual environment: `python3 -m venv venv && source venv/bin/activate`
-5. Install dependencies: `pip install fastapi uvicorn sqlalchemy sqlite3`
-6. Upload Database/schema.sql and run it to initialize SQLite database.
-7. Upload FastAPI code and start server: `uvicorn main:app --host 0.0.0.0 --port 8000`
-8. Configure security group to allow inbound traffic on port 8000.
+3. Upload the project files to your EC2 instance.
+4. Make the deployment script executable: `chmod +x deploy.sh`
+5. Run the automated deployment script: `./deploy.sh`
+
+The deployment script will automatically:
+- Update system packages
+- Install Python 3, pip, virtual environment, git, and supervisor
+- Create project directory and set up virtual environment
+- Install Python dependencies from `requirements.txt`
+- Initialize the SQLite database using `init_db.py`
+- Configure supervisor for automatic service management
+- Start the FastAPI server on port 8000
+- Test the API endpoints
+
+### Manual Setup (Alternative)
+
+If you prefer manual setup:
+
+1. Launch AWS EC2 instance (Ubuntu, t3.micro for free tier).
+2. Connect to EC2 via SSH.
+3. Install required packages:
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   sudo apt install python3 python3-pip python3-venv git supervisor -y
+   ```
+4. Set up virtual environment:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+5. Install dependencies: `pip install -r requirements.txt`
+6. Initialize database: `python3 init_db.py`
+7. Start the server: `uvicorn app.main:app --host 0.0.0.0 --port 8000`
+
+### Security Group Configuration
+
+Configure your EC2 security group to allow inbound traffic on port 8000 (TCP) from your IP address or 0.0.0.0/0 for public access.
+
+### Database Initialization
+
+The `init_db.py` script creates three tables:
+- `students`: Stores student RFID IDs, names, and course/year information
+- `events`: Stores event names and dates
+- `attendance_logs`: Records attendance scans with timestamps
+
+A default event is automatically created if no events exist.
+
+### Service Management
+
+The deployment script sets up Supervisor to automatically manage the FastAPI service:
+- Auto-start on system boot
+- Automatic restart on failure
+- Log management in the `logs/` directory
+
+Check service status: `sudo supervisorctl status rfid-attendance`
+Restart service: `sudo supervisorctl restart rfid-attendance`
 
 ## Mobile UI Setup
 
