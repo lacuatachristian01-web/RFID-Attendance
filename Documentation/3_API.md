@@ -6,15 +6,15 @@ This document describes the FastAPI endpoints for the RFID Attendance System.
 
 ### POST /scan
 
-Receive UID from ESP32, check if student exists, log attendance if yes, return new_student if no.
+Receive UID from ESP32, check if student exists, log attendance if yes.
 
 - **Parameters (JSON body):**
   - `uid` (string): RFID UID
   - `event_id` (int): Event ID for the scan
 
 - **Response:**
-  - `{"status": "success", "message": "Attendance logged"}` if student exists
-  - `{"status": "new_student", "uid": "<UID>"}` if new student needs registration
+  - `{"authorized": true, "name": "John Doe"}` if student exists and attendance logged
+  - `{"authorized": false, "uid": "56EEC2B8"}` if new student needs registration
 
 ### POST /register
 
