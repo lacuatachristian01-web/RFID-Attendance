@@ -37,8 +37,8 @@ sudo chown ubuntu:ubuntu /home/ubuntu/rfid-attendance/logs
 echo "⚙️ Setting up supervisor for auto-start..."
 sudo tee /etc/supervisor/conf.d/rfid-attendance.conf > /dev/null <<EOF
 [program:rfid-attendance]
-directory=/home/ubuntu/rfid-attendance
-command=/home/ubuntu/rfid-attendance/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+directory=/home/ubuntu/RFID-Attendance/rfid-attendance
+command=/home/ubuntu/RFID-Attendance/rfid-attendance/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
 user=ubuntu
 autostart=true
 autorestart=true
