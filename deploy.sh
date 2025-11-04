@@ -29,8 +29,9 @@ pip install -r ../requirements.txt
 echo "🗄️ Initializing database..."
 python3 ../init_db.py
 
-# Create logs directory
-mkdir -p logs
+# Create logs directory at the location Supervisor expects
+sudo mkdir -p /home/ubuntu/rfid-attendance/logs
+sudo chown ubuntu:ubuntu /home/ubuntu/rfid-attendance/logs
 
 # Set up supervisor for auto-start
 echo "⚙️ Setting up supervisor for auto-start..."
