@@ -1,99 +1,172 @@
 # RFID Attendance
 
-*Wireless ESP32 RFID Scanner for School Event Attendance with FastAPI Backend*
+*Wireless ESP32 RFID Scanner for School Event Attendance with FastAPI Backend on AWS EC2*
 
-This project implements a wireless RFID attendance system for school events using an ESP32 and RC522 RFID module. Scans are sent to a FastAPI backend server that manages the SQLite database, with first-time scans prompting registration through the UI. The student council can manage events and view attendance through a mobile app.
+This project implements a wireless RFID attendance system for school events using an ESP32 and RC522 RFID module. Scans are sent via HTTP to a FastAPI backend server running on AWS EC2 that manages the SQLite database. First-time scans prompt registration through the mobile UI. The student council can manage events and view attendance through a React Native mobile app.
 
 ---
 
 ## Features
 
-- Wireless ESP32 hotspot for independent operation
-- Reads RFID cards with RC522
-- Sends scan data via HTTP to FastAPI backend (SQLite database)
-- First-time scan registration workflow via UI
-- Visual and audio feedback (LED/buzzer)
-- Event-based attendance management
-- Optional offline scan storage and sync
+- **Cloud-based Backend**: FastAPI server deployed on AWS EC2 with automated setup
+- **Automated Deployment**: One-command deployment script for EC2 instances
+- **WiFi-connected ESP32**: Connects to school WiFi or mobile hotspot for internet access
+- **RFID Scanning**: Reads RFID cards with RC522 module
+- **Real-time API**: HTTP requests to FastAPI backend for attendance logging
+- **Registration Workflow**: First-time scan registration via mobile app
+- **Visual/Audio Feedback**: LED and buzzer feedback on ESP32
+- **Event Management**: Create and manage multiple events
+- **Attendance Analytics**: View attendance logs with student and event details
+
+---
+
+## Architecture
+
+```
+ESP32 + RC522 ──WiFi──> AWS EC2 (FastAPI) ──> SQLite Database
+                        │
+Mobile App ─────────────┘
+```
 
 ---
 
 ## Hardware
 
-- ESP32 Development Board
-- RC522 RFID Reader
+- ESP32 Development Board (WiFi-enabled)
+- RC522 RFID Reader Module
 - LED and Buzzer for feedback
-- Server device (Raspberry Pi or computer) for FastAPI backend
-- Optional: small OLED display
+- AWS EC2 Instance (Ubuntu) for backend
+- Optional: Small OLED display
 
 ---
 
-## Software / Libraries
+## Software Stack
 
 ### ESP32 Firmware
 - Arduino IDE or PlatformIO
 - MFRC522 library for RFID reading
-- WiFi.h for hotspot functionality
-- HTTPClient.h for API requests to FastAPI
-- EEPROM.h or SPIFFS.h for offline storage (optional)
+- WiFi.h for internet connectivity
+- HTTPClient.h for API requests
 
-### Backend
-- Python 3.x
+### Backend (AWS EC2)
+- Python 3.8+
 - FastAPI for REST API
-- Uvicorn for server
-- SQLite3 for database
-- SQLAlchemy or Peewee for ORM (optional)
+- Uvicorn ASGI server
+- SQLite3 database
+- SQLAlchemy ORM
+- Supervisor for process management
 
-### UI
-- React Native / Expo for mobile app
+### Mobile UI
+- React Native / Expo
+- API integration with FastAPI backend
 
 ---
 
 ## Database Schema
 
-*students*
-| student_id | rfid_id | name | grade |
+**students**
+| id | rfid_id | name | course_year |
 
-*events*
+**events**
 | event_id | event_name | event_date |
 
-*attendance_logs*
+**attendance_logs**
 | log_id | student_id | event_id | scan_timestamp |
 
 *Note:* All tables use SQLite-specific syntax. See Database/schema.sql for full schema.
 
 ---
 
-## Folder Structure
+## Quick Start
 
-- **UI/**: Mobile app for event management and attendance viewing (React Native/Expo)
-- **Arduino/**: ESP32 firmware code for RFID scanning
-- **Backend/**: FastAPI server code (Python)
+### 1. Deploy Backend to AWS EC2
+
+```bash
+# On your EC2 instance:
+git clone https://github.com/Danncode10/RFID-Attendance.git
+cd RFID-Attendance
+chmod +x deploy.sh
+./deploy.sh
+```
+
+The script automatically:
+- Updates system packages
+- Installs Python, pip, virtual environment, supervisor
+- Sets up Python virtual environment in project directory
+- Installs dependencies from requirements.txt
+- Initializes SQLite database
+- Creates logs directory
+- Configures supervisor for auto-start
+- Starts FastAPI server on port 8000
+
+### 2. Configure Security Group
+
+Allow inbound traffic on port 8000 (TCP) in your EC2 security group.
+
+### 3. Setup ESP32 Hardware
+
+1. Connect RC522 to ESP32 (SPI pins)
+2. Connect LED and buzzer for feedback
+3. Upload Arduino firmware from Arduino/ folder
+4. Configure WiFi credentials to point to your EC2 API
+
+### 4. Setup Mobile App
+
+```bash
+cd UI/
+npm install
+npm start
+```
+
+Configure API endpoint to your EC2 instance: `http://your-ec2-ip:8000`
+
+---
+
+## Project Structure
+
+- **UI/**: React Native mobile app for event management and attendance viewing
+- **app/**: FastAPI backend application code
+- **Arduino/**: ESP32 firmware for RFID scanning
 - **Database/**: SQLite schemas and initialization scripts
 - **Hardware/**: Wiring diagrams and hardware setup notes
-- **Documentation/**: MasterPlan and project documentation
+- **Documentation/**: Setup guides, API docs, and development notes
 - **Config/**: Configuration files and credentials
+- **deploy.sh**: Automated EC2 deployment script
+- **init_db.py**: Database initialization script
+- **requirements.txt**: Python dependencies
 
-## Setup
+---
 
-### Hardware & Firmware
-1. Connect ESP32 and RC522 as per Hardware/README.md wiring diagram.
-2. Upload Arduino sketch from Arduino/ folder to ESP32 (update with API integration).
-3. Configure Wi-Fi hotspot on ESP32 as per Config/.
+## API Endpoints
 
-### Backend Setup
-4. On the server device (e.g., Raspberry Pi), set up Python virtual environment.
-5. Install dependencies: pip install fastapi uvicorn sqlmodel sqlite3  # or preferred ORM
-6. Run Database/schema.sql to initialize SQLite database (see Backend/ for code to run it).
-7. Start FastAPI server: uvicorn main:app --host 0.0.0.0 --port 8000  (replace main:app with your app instance)
+- `GET /` - API information
+- `POST /scan` - Scan RFID card and log attendance
+- `POST /register` - Register new student
+- `GET /students` - Get all registered students
+- `GET /attendance` - Get attendance logs (with optional event filter)
+- `POST /events` - Create new event
+- `GET /events` - Get all events
 
-### Mobile UI
-8. Install dependencies: cd UI/ && npm install
-9. Start the app: npm start
-10. Connect to ESP32 hotspot to access FastAPI server for registration and viewing attendance.
+Interactive API docs available at: `http://your-ec2-ip:8000/docs`
 
-### Testing
-11. Run tests for individual components as described in MasterPlan.md in Documentation/.
+---
+
+## Development
+
+See Documentation/ folder for detailed setup guides, API documentation, and development notes.
+
+### Local Development
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Initialize database
+python3 init_db.py
+
+# Run FastAPI server
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
 
 ---
 

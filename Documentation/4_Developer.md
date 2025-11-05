@@ -13,7 +13,7 @@ This guide provides a detailed step-by-step implementation plan for building the
 1. Set up React Native project with necessary dependencies for navigation and API integration.
 2. Design screens: Event Management, Student Registration, Attendance Logs, Scanner Connection.
 3. Implement UI components for creating events, viewing students, logging attendance.
-4. Connect to ESP32 hotspot and FastAPI server via API calls.
+4. Configure API endpoint to point to AWS EC2 FastAPI server.
 5. Add UI prompts for registering new RFID scans detected by the hardware.
 
 **Why it matters:**
@@ -23,26 +23,27 @@ This guide provides a detailed step-by-step implementation plan for building the
 
 ### Step 2: FastAPI Backend Setup
 
-**Goal:** Set up the FastAPI server to handle database operations and API requests from both UI and hardware.
+**Goal:** Set up the FastAPI server on AWS EC2 to handle database operations and API requests from both UI and hardware.
 
 **Tasks & Details:**
 
-1. Set up a Python virtual environment and install FastAPI, Uvicorn, SqlAlchemy, SQLite.
-2. Define API endpoints:
+1. Launch AWS EC2 instance (Ubuntu, t3.micro).
+2. Install Python, create virtual environment, install FastAPI, Uvicorn, SqlAlchemy, SQLite.
+3. Define API endpoints:
 
-   - POST /scan: Receive UID from ESP32, check if student exists, log attendance if yes, return new_student if no.
+   - POST /scan: Receive UID from ESP32, check if student exists, log attendance if yes.
    - POST /register: Register new student with name/grade from UI.
    - GET /students: Retrieve student list for UI.
    - POST /events: Create/manage events.
    - GET /attendance: View attendance logs.
 
-3. Initialize SQLite database with schema from Database/schema.sql.
-4. Secure API with basic auth or API keys if needed.
-5. Run FastAPI server for testing with UI.
+4. Initialize SQLite database with schema from Database/schema.sql.
+5. Configure security group for port 8000.
+6. Run FastAPI server: `uvicorn main:app --host 0.0.0.0 --port 8000`
 
 **Why it matters:**
 
-- Backend is developed early to support UI functionality.
+- Cloud backend ensures accessibility and separates database from ESP32 code.
 
 ### Step 3: Hardware Setup
 
@@ -72,28 +73,20 @@ This guide provides a detailed step-by-step implementation plan for building the
 - Correct wiring is critical for accurate RFID reading.
 - Feedback devices improve usability for students and council members.
 
-### Step 4: ESP32 Hotspot Setup
+### Step 4: ESP32 WiFi Setup
 
-**Goal:** Make the ESP32 act as a Wi-Fi hotspot so the student council app or device can connect to it directly.
+**Goal:** Configure ESP32 to connect to available WiFi networks for internet access.
 
 **Tasks & Details:**
 
-1. Use the WiFi.h library to configure an access point (AP mode):
-
-   ```cpp
-   WiFi.softAP("EventScanner_01", "password123");
-   IPAddress IP = WiFi.softAPIP();
-   Serial.print("AP IP address: ");
-   Serial.println(IP);
-   ```
-
-2. Set SSID and password for security.
-3. Test the hotspot using a mobile device or laptop to ensure it is visible and connectable.
+1. Configure WiFi credentials in ESP32 firmware (SSID/password).
+2. Add fallback to mobile hotspot if school WiFi is unreliable.
+3. Test internet connectivity and API reachability.
 
 **Why it matters:**
 
-- Hotspot ensures wireless communication without relying on school Wi-Fi.
-- Students or council members can scan and register offline from the network created by ESP32.
+- Ensures ESP32 can communicate with AWS EC2 backend.
+- Provides flexibility for different network conditions.
 
 ### Step 5: RFID Reading Logic
 
@@ -132,7 +125,7 @@ Scan RFID -> Read UID -> Convert UID -> Query students table
 
    - If student exists, log success, green LED.
    - If new student, red LED, wait for registration via UI.
-4. Retry on connection failure, store temporarily if offline.
+4. Handle connection failures by retrying HTTP requests.
 
 **Why it matters:**
 
@@ -150,7 +143,6 @@ Scan RFID -> Read UID -> Convert UID -> Query students table
 
 2. **Mobile app interaction:**
 
-   - Connect to ESP32 hotspot and FastAPI server.
    - Poll API or receive notifications for new scans.
    - Show "New ID detected. Register?" prompt with UID.
    - Input name/grade/class, send POST /register to FastAPI.
@@ -175,20 +167,20 @@ Scan RFID -> Read UID -> Convert UID -> Query students table
 
 - Instant feedback reduces errors and confusion during events.
 
-### Step 9: Offline Handling (Optional but Recommended)
+### Step 9: Network Reliability
 
-**Goal:** Ensure scanning works even if Wi-Fi/backend connection fails.
+**Goal:** Ensure reliable internet connectivity for ESP32 operations.
 
 **Tasks & Details:**
 
-1. Use EEPROM or SPIFFS to store temporary scans: UID + timestamp + event_id
-2. Once connection is restored, batch upload scans via API to FastAPI server.
-3. Mark synced entries as completed to avoid duplicates.
+1. Test with school WiFi and mobile hotspot as backup.
+2. Configure ESP32 to switch networks automatically if connection fails.
+3. Monitor API response times and handle timeouts.
 
 **Why it matters:**
 
-- Avoids lost attendance records during network issues.
-- Increases reliability for large school events.
+- Prevents scanning failures due to network issues.
+- Ensures system works in varying connectivity conditions.
 
 ### Step 10: Testing & Debugging
 
@@ -201,7 +193,7 @@ Scan RFID -> Read UID -> Convert UID -> Query students table
 3. Verify attendance logging to SQL database
 4. Test event-specific logging (multiple events)
 5. Test LED/buzzer feedback
-6. Simulate offline/online scenario if implementing offline mode
+6. Test network switching between WiFi and mobile hotspot
 
 **Why it matters:**
 
