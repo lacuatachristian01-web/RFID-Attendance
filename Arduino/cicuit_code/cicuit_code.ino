@@ -30,14 +30,24 @@ void setup() {
   // Initialize WiFi
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Connecting to WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
+  bool wifiConnected = false;
+  for (int i = 0; i < WIFI_CONNECT_ATTEMPTS; i++) {
+    if (WiFi.status() == WL_CONNECTED) {
+      wifiConnected = true;
+      break;
+    }
     delay(500);
     Serial.print(".");
   }
   Serial.println();
-  Serial.println("WiFi connected!");
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
+  if (wifiConnected) {
+    Serial.println("WiFi connected!");
+    Serial.print("IP Address: ");
+    Serial.println(WiFi.localIP());
+  } else {
+    Serial.println("WiFi connection failed. Proceeding without WiFi.");
+    Serial.println("RFID will work, but API calls will fail.");
+  }
 
   SPI.begin();
   rfid.PCD_Init();

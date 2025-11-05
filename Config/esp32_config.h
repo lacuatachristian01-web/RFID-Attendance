@@ -8,6 +8,9 @@
 const char* WIFI_SSID = "YOUR_WIFI_SSID";          // Replace with your WiFi SSID
 const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";  // Replace with your WiFi password
 
+// WiFi connection timeout (in attempts, each 500ms)
+const int WIFI_CONNECT_ATTEMPTS = 20;  // 10 seconds total
+
 // API Configuration
 // For testing: use "http://192.168.1.XXX:8000" (replace XXX with your computer's IP)
 // For production: use "http://YOUR_EC2_IP:8000"
