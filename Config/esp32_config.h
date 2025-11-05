@@ -5,8 +5,8 @@
 #define ESP32_CONFIG_H
 
 // WiFi Configuration
-const char* WIFI_SSID = "YOUR_WIFI_SSID";          // Replace with your WiFi SSID
-const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";  // Replace with your WiFi password
+const char* WIFI_SSID = "Helping the poor is my PASSION";          // Replace with your WiFi SSID
+const char* WIFI_PASSWORD = "lefeiram";  // Replace with your WiFi password
 
 // WiFi connection timeout (in attempts, each 500ms)
 const int WIFI_CONNECT_ATTEMPTS = 20;  // 10 seconds total
@@ -14,7 +14,7 @@ const int WIFI_CONNECT_ATTEMPTS = 20;  // 10 seconds total
 // API Configuration
 // For testing: use "http://192.168.1.XXX:8000" (replace XXX with your computer's IP)
 // For production: use "http://YOUR_EC2_IP:8000"
-const char* API_BASE_URL = "http://192.168.1.100:8000";  // Update this IP for testing
+const char* API_BASE_URL = "http://13.214.102.163:8000";  // EC2 server IP
 const char* SCAN_ENDPOINT = "/scan";
 
 // Default event ID (can be changed via configuration)
