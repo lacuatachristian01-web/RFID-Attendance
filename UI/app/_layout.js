@@ -15,6 +15,7 @@ export default function Layout() {
       <Stack.Screen name="events" options={{ title: "Events" }} />
       <Stack.Screen name="create-event" options={{ title: "Create Event" }} />
       <Stack.Screen name="event-attendance" options={{ title: "Event Attendance" }} />
+      <Stack.Screen name="student-attendance" options={{ title: "Student Attendance" }} />
     </Stack>
   );
 }

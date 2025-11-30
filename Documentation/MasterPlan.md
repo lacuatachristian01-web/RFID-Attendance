@@ -2,7 +2,7 @@
 
 ## Objective
 
-We are building a wireless ESP32 device with RC522 RFID scanner to track attendance for school events.
+We are building an ESP32 device with RC522 RFID scanner and an I2C LCD to track attendance for school events. The mobile UI app will now use manual input for RFID UIDs.
 
 - Each scan is linked to a specific event created/managed by the Student Council.
 - First-time scans trigger a UI prompt to register the student.
@@ -16,6 +16,7 @@ We are building a wireless ESP32 device with RC522 RFID scanner to track attenda
 
 - ESP32 development board (Wi-Fi enabled)
 - RC522 RFID module
+- I2C LCD display (e.g., 16x2 or 20x4) for displaying RFID UIDs
 - LEDs and/or buzzer for feedback
 
 ### Software / Libraries
@@ -156,45 +157,22 @@ Scan RFID -> Read UID -> Convert UID -> Query students table
 - Ensures first-time scans register students properly.
 - Avoids duplicate entries in the database.
 
-### Step 6: ESP32 API Integration
+### Step 7: UI / Registration Prompt (Manual Input)
 
-**Goal:** Modify ESP32 firmware to send scan data via HTTP to FastAPI server.
-
-**Tasks & Details:**
-
-1. Include HTTPClient.h library for ESP32.
-2. After reading UID, send POST /scan request to FastAPI with UID and event_id.
-3. Handle response:
-
-   - If student exists, log success, green LED.
-   - If new student, red LED, wait for registration via UI.
-4. Retry on connection failure, store temporarily if offline.
-
-**Why it matters:**
-
-- Integrates ESP32 with backend API for centralized data handling.
-
-### Step 7: UI / Registration Prompt
-
-**Goal:** Prompt student council members to register new RFID IDs on first scan.
+**Goal:** Allow student council members to manually input RFID UIDs for registration in the mobile app.
 
 **Tasks & Details:**
 
-1. **LED/Buzzer feedback on ESP32:**
+1. **Manual Input in Mobile App:**
 
-   - Flash red LED + buzzer beep if first-time scan detected (signaled from API).
-
-2. **Mobile app interaction:**
-
-   - Connect to ESP32 hotspot and FastAPI server.
-   - Poll API or receive notifications for new scans.
-   - Show "New ID detected. Register?" prompt with UID.
+   - Provide a dedicated input field for RFID UID in the registration screen.
+   - User manually types or pastes the RFID UID displayed on the ESP32's LCD.
    - Input name/grade/class, send POST /register to FastAPI.
 
 **Why it matters:**
 
-- Makes first-time registration user-friendly and controlled.
-- Prevents unregistered IDs from being used without council approval.
+- Simplifies the UI interaction by removing direct hardware integration for registration.
+- Provides flexibility for registration even if the hardware is not directly connected to the app.
 
 ### Step 8: Feedback Mechanism
 
@@ -205,7 +183,8 @@ Scan RFID -> Read UID -> Convert UID -> Query students table
 1. Green LED for successful scan
 2. Red LED for first-time registration
 3. Optional buzzer: different tones for success/failure
-4. Can also display info on a small OLED screen (student name, event name)
+4. Display RFID UID on the I2C LCD screen.
+5. Can also display other info on the LCD screen (student name, event name, status messages).
 
 **Why it matters:**
 

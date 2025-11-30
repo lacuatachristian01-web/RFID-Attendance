@@ -17,7 +17,8 @@ def init_database():
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS students (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                rfid_id TEXT UNIQUE NOT NULL,
+                rfid_id TEXT UNIQUE,
+                student_id TEXT UNIQUE NOT NULL,
                 name TEXT NOT NULL,
                 course_year TEXT NOT NULL
             )
@@ -41,6 +42,14 @@ def init_database():
                 scan_timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (student_id) REFERENCES students(id),
                 FOREIGN KEY (event_id) REFERENCES events(event_id)
+            )
+        ''')
+
+        # Create settings table for key-value storage (used for active event)
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS settings (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL
             )
         ''')
 

@@ -20,14 +20,17 @@ Root endpoint providing API information.
   {
     "message": "RFID Attendance API running on AWS EC2",
     "version": "1.0.0",
-    "endpoints": [
-      "POST /scan - Scan RFID card",
-      "POST /register - Register new student",
-      "GET /students - Get all students",
-      "GET /attendance - Get attendance logs",
-      "POST /events - Create event",
-      "GET /events - Get all events"
-    ]
+  "endpoints": [
+    "POST /scan - Scan RFID card",
+    "POST /register - Register new student",
+    "GET /students - Get all students",
+    "DELETE /students/{student_id} - Delete student by student_id",
+    "GET /attendance - Get attendance logs",
+    "POST /events - Create event",
+    "GET /events - Get all events",
+    "PUT /events/{event_id} - Update event by event_id",
+    "DELETE /events/{event_id} - Delete event by event_id"
+  ]
   }
   ```
 
@@ -40,11 +43,31 @@ Receive RFID UID from ESP32, check if student exists, and log attendance if auth
   - `uid` (string, required): RFID UID
   - `event_id` (integer, optional): Event ID for the scan (defaults to 1)
 
-- **Success Response (200):**
+- **Success Response (200) - First scan today:**
   ```json
   {
     "authorized": true,
-    "name": "John Doe"
+    "name": "John Doe",
+    "event_id": 1,
+    "duplicate": false
+  }
+  ```
+
+- **Success Response (200) - Already scanned today:**
+  ```json
+  {
+    "authorized": true,
+    "name": "John Doe",
+    "event_id": 1,
+    "message": "Already scanned for this event today",
+    "duplicate": true
+  }
+  ```
+
+- **Error Response (400) - No active event:**
+  ```json
+  {
+    "detail": "No active event set. Please set an active event first."
   }
   ```
 
@@ -155,6 +178,128 @@ Retrieve list of all events.
       "event_date": "2023-10-28"
     }
   ]
+  ```
+
+### PUT /events/{event_id}
+
+Update an existing event.
+
+- **Method:** PUT
+- **Parameters:**
+  - `event_id` (integer, required): Event ID in URL path
+  - `event_name` (string, optional): New event name
+  - `event_date` (string, optional): New event date in YYYY-MM-DD format
+
+- **Success Response (200):**
+  ```json
+  {
+    "status": "success",
+    "message": "Event updated successfully"
+  }
+  ```
+
+- **Error Response (404):** Event not found
+  ```json
+  {
+    "detail": "Event not found"
+  }
+  ```
+
+- **Error Response (400):** No fields to update
+  ```json
+  {
+    "detail": "No fields to update"
+  }
+  ```
+
+### DELETE /events/{event_id}
+
+Delete an event by ID. This will also delete all associated attendance logs.
+
+- **Method:** DELETE
+- **Parameters:**
+  - `event_id` (integer, required): Event ID in URL path
+
+- **Success Response (200):**
+  ```json
+  {
+    "status": "success",
+    "message": "Event 'Event Name' deleted successfully"
+  }
+  ```
+
+- **Error Response (404):** Event not found
+  ```json
+  {
+    "detail": "Event not found"
+  }
+  ```
+
+### GET /active-event
+
+Get the currently active event.
+
+- **Method:** GET
+- **Parameters:** None
+- **Success Response (200):**
+  ```json
+  {
+    "active_event": {
+      "event_id": 1,
+      "event_name": "Sample Event",
+      "event_date": "2023-12-01"
+    },
+    "message": "Active event retrieved successfully"
+  }
+  ```
+
+- **Response when no active event (200):**
+  ```json
+  {
+    "active_event": null,
+    "message": "No active event set"
+  }
+  ```
+
+### POST /active-event
+
+Set an event as the active event for RFID scanning.
+
+- **Method:** POST
+- **Parameters (JSON body):**
+  - `event_id` (integer, required): ID of the event to set as active
+
+- **Success Response (200):**
+  ```json
+  {
+    "status": "success",
+    "active_event": {
+      "event_id": 1,
+      "event_name": "Sample Event"
+    },
+    "message": "Event 'Sample Event' set as active"
+  }
+  ```
+
+- **Error Response (404):** Event not found
+  ```json
+  {
+    "detail": "Event not found"
+  }
+  ```
+
+### DELETE /active-event
+
+Clear the active event (no event will be active for scanning).
+
+- **Method:** DELETE
+- **Parameters:** None
+- **Success Response (200):**
+  ```json
+  {
+    "status": "success",
+    "message": "Active event cleared"
+  }
   ```
 
 ## Interactive Documentation

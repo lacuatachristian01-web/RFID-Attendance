@@ -35,6 +35,10 @@ export default StyleSheet.create({
     padding: 10,
     marginVertical: 8,
     backgroundColor: "#fff",
+    height: 50,
+    color: "#000",
+    fontSize: 16,
+    placeholderTextColor: "#999",
   },
   button: {
     backgroundColor: "#007bff",
@@ -119,9 +123,12 @@ eventItem: {
   shadowOpacity: 0.1,
   shadowRadius: 3,
   elevation: 3,
+  flexDirection: "row",
+  alignItems: "center",
 },
-eventContent: {
+eventContentTouchable: {
   flex: 1,
+  paddingRight: 10,
 },
 eventName: {
   fontSize: 18,
@@ -201,14 +208,178 @@ statusIndicator: {
   alignItems: "center",
   marginLeft: 15,
 },
+duplicateIndicator: {
+  backgroundColor: "#FF9800", // Orange for duplicates
+},
 statusText: {
   color: "#fff",
   fontSize: 18,
   fontWeight: "bold",
 },
+duplicateText: {
+  fontSize: 12,
+  color: "#FF9800",
+  fontStyle: "italic",
+  marginTop: 2,
+},
 emptyContainer: {
   alignItems: "center",
   justifyContent: "center",
   padding: 20,
+},
+// Action buttons for events
+actionButtons: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "flex-end",
+  width: 100, // Fixed width for action buttons
+  paddingRight: 15,
+},
+eventActionButton: {
+  padding: 8,
+  marginLeft: 8,
+},
+// Modal styles
+modalOverlay: {
+  flex: 1,
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  justifyContent: "center",
+  alignItems: "center",
+},
+modalContent: {
+  backgroundColor: "#fff",
+  borderRadius: 10,
+  padding: 20,
+  width: "90%",
+  maxWidth: 400,
+},
+modalTitle: {
+  fontSize: 20,
+  fontWeight: "bold",
+  textAlign: "center",
+  marginBottom: 20,
+  color: "#333",
+},
+modalButtons: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginTop: 20,
+},
+cancelButton: {
+  backgroundColor: "#6c757d",
+  flex: 1,
+  marginRight: 10,
+},
+// Active Event Section
+activeEventSection: {
+  marginBottom: 20,
+  padding: 15,
+  backgroundColor: "#fff",
+  borderRadius: 10,
+  shadowColor: "#000",
+  shadowOpacity: 0.1,
+  shadowRadius: 3,
+  elevation: 3,
+},
+sectionTitle: {
+  fontSize: 18,
+  fontWeight: "bold",
+  color: "#333",
+  marginBottom: 15,
+  textAlign: "center",
+},
+activeEventDisplay: {
+  marginBottom: 10,
+},
+activeEventInfo: {
+  marginBottom: 10,
+},
+activeEventName: {
+  fontSize: 20,
+  fontWeight: "bold",
+  color: "#4CAF50",
+  marginBottom: 5,
+},
+activeEventDate: {
+  fontSize: 16,
+  color: "#666",
+  marginBottom: 5,
+},
+noActiveEvent: {
+  fontSize: 18,
+  fontWeight: "bold",
+  color: "#ff5252",
+  marginBottom: 5,
+},
+activeEventStatus: {
+  fontSize: 14,
+  color: "#666",
+  fontStyle: "italic",
+},
+activeEventActions: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginTop: 10,
+},
+actionButton: {
+  flex: 1,
+  padding: 10,
+  borderRadius: 8,
+  alignItems: "center",
+  marginHorizontal: 5,
+},
+actionButtonText: {
+  color: "#fff",
+  fontWeight: "bold",
+  fontSize: 14,
+},
+eventSelector: {
+  marginTop: 15,
+  padding: 15,
+  backgroundColor: "#f8f9fa",
+  borderRadius: 8,
+  borderWidth: 1,
+  borderColor: "#dee2e6",
+},
+selectorTitle: {
+  fontSize: 16,
+  fontWeight: "bold",
+  color: "#333",
+  marginBottom: 10,
+},
+eventOption: {
+  padding: 12,
+  backgroundColor: "#fff",
+  borderRadius: 6,
+  marginVertical: 4,
+  borderWidth: 1,
+  borderColor: "#e9ecef",
+},
+activeEventOption: {
+  backgroundColor: "#e8f5e8",
+  borderColor: "#4CAF50",
+},
+eventOptionName: {
+  fontSize: 16,
+  fontWeight: "bold",
+  color: "#333",
+  marginBottom: 2,
+},
+eventOptionDate: {
+  fontSize: 14,
+  color: "#666",
+},
+currentActiveText: {
+  fontSize: 12,
+  color: "#4CAF50",
+  fontWeight: "bold",
+  marginTop: 2,
+},
+noEventsText: {
+  textAlign: "center",
+  fontSize: 14,
+  color: "#666",
+  fontStyle: "italic",
+  padding: 10,
 },
 });

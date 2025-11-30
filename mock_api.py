@@ -25,6 +25,9 @@ AUTHORIZED_UIDS = {
     "D5E7F55E": {"name": "Diana Davis", "course_year": "Grade 12"}
 }
 
+# Global variable to store latest scanned UID for registration
+latest_uid = None
+
 @app.get("/")
 def root():
     return {

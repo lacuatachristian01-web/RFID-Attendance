@@ -24,11 +24,21 @@
       "edgeToEdgeEnabled": true,
       "package": "com.chrislacuata.Final_Project"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
+    "platforms": ["ios", "android"],
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1797ac58-a854-4209-8549-850f20cdc587"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/1797ac58-a854-4209-8549-850f20cdc587"
+    }
   }
 }

@@ -39,3 +39,8 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# database files
+attendance.db
+app/attendance.db
+*.db

@@ -25,8 +25,17 @@ This guide walks through setting up the RFID Attendance System components.
 
 ### ESP32 Firmware
 
-- Upload Arduino sketch from Arduino/ folder to ESP32 (update with API integration).
-- Configure Wi-Fi credentials on ESP32 as per Config/.
+1. **Configure WiFi Credentials:**
+   - Open `Config/esp32_config.h`
+   - Replace `"YOUR_WIFI_SSID"` with your WiFi network name
+   - Replace `"YOUR_WIFI_PASSWORD"` with your WiFi password
+   - The `API_BASE_URL` should already be set to your EC2 server IP
+
+2. **Upload Arduino Sketch:**
+   - Open `Arduino/cicuit_code/cicuit_code.ino` in Arduino IDE
+   - Select your ESP32 board and COM port
+   - Click Upload
+   - Open Serial Monitor (115200 baud) to verify connection
 
 ## Backend Setup
 
@@ -84,6 +93,48 @@ The `init_db.py` script creates three tables:
 - `attendance_logs`: Records attendance scans with timestamps
 
 A default event is automatically created if no events exist.
+
+### Database Data Management
+
+To manually add students to the database on your EC2 instance:
+
+1. **Connect to EC2 via SSH:**
+   ```bash
+   ssh -i your-key.pem ubuntu@your-ec2-ip
+   cd RFID-Attendance
+   ```
+
+2. **Access the database:**
+   ```bash
+   sqlite3 attendance.db
+   ```
+
+3. **Add a student:**
+   ```sql
+   INSERT INTO students (rfid_id, name, course_year) VALUES ('HEX_UID', 'Student Name', 'Course-Year');
+   ```
+
+   Example:
+   ```sql
+   INSERT INTO students (rfid_id, name, course_year) VALUES ('A0C470AC', 'John Doe', 'BSCS-3B');
+   ```
+
+4. **View students:**
+   ```sql
+   SELECT * FROM students;
+   ```
+
+5. **View attendance logs:**
+   ```sql
+   SELECT * FROM attendance_logs;
+   ```
+
+6. **Exit SQLite:**
+   ```sql
+   .exit
+   ```
+
+**Note:** Get the HEX_UID from the Arduino Serial Monitor when scanning a card. The UID appears as "Card UID: [HEX_VALUE]".
 
 ### Service Management
 
